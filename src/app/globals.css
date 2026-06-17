@@ -1,2 +1,8 @@
 @import "tailwindcss";
 @import "@heroui/styles";
+
+body {
+  @apply bg-white text-gray-900 dark:bg-[#0f1117] dark:text-gray-100 transition-colors duration-300;
+  padding-top: 64px;
+  /* 16 * 4 = 64px to match navbar height */
+}
