@@ -1,13 +1,19 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, ChevronDown, LayoutDashboard, LogOut, User } from "lucide-react";
+import { Sun, Moon, ChevronDown, LayoutDashboard, LogOut, User, Shield, Store } from "lucide-react";
 import { useSession, signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+
+const ROLE_CONFIG = {
+  user: { label: 'Traveler', color: 'from-indigo-500 to-violet-500', icon: User },
+  vendor: { label: 'Vendor', color: 'from-emerald-500 to-teal-500', icon: Store },
+  admin: { label: 'Admin', color: 'from-red-500 to-rose-500', icon: Shield },
+};
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -68,6 +74,9 @@ const Navbar = () => {
     { name: "All Tickets", href: "/tickets" },
     ...(user ? [{ name: "Dashboard", href: dashboardLinks[user?.role || 'user'] }] : []),
   ];
+
+  const role = user?.role || 'user';
+  const roleConfig = ROLE_CONFIG[role] || ROLE_CONFIG.user;
 
   return (
     <>
@@ -172,8 +181,8 @@ const Navbar = () => {
                         <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                           <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
                           <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 capitalize">
-                            {user.role || 'user'}
+                          <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r ${roleConfig.color} text-white capitalize`}>
+                            {roleConfig.label}
                           </span>
                         </div>
 
@@ -187,7 +196,7 @@ const Navbar = () => {
                             Dashboard
                           </Link>
                           <Link
-                            href="/dashboard/user"
+                            href="/dashboard/user/profile"
                             onClick={() => setIsDropdownOpen(false)}
                             className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl transition-all"
                           >
@@ -286,8 +295,8 @@ const Navbar = () => {
                       <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
                       <p className="text-xs text-gray-400 truncate">{user.email}</p>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 capitalize">
-                      {user.role || 'user'}
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r ${roleConfig.color} text-white capitalize`}>
+                      {roleConfig.label}
                     </span>
                   </div>
                 )}
