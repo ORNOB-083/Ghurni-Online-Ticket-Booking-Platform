@@ -68,6 +68,7 @@ const Navbar = () => {
   };
 
   const isTransparent = pathname === "/" && !scrolled;
+  const isDashboard = pathname?.startsWith('/dashboard');
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -78,18 +79,16 @@ const Navbar = () => {
   const role = user?.role || 'user';
   const roleConfig = ROLE_CONFIG[role] || ROLE_CONFIG.user;
 
+  // Navbar Position Class
+  const navPosition = isDashboard
+    ? "relative bg-white dark:bg-[#0f1117] border-b border-gray-200 dark:border-gray-800 shadow-sm"
+    : isTransparent
+      ? "fixed top-0 left-0 right-0 z-50 bg-transparent border-b border-white/10"
+      : "fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#0f1117] backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800";
+
   return (
     <>
-      <nav
-        className={`
-          fixed top-0 left-0 right-0 z-50 w-full
-          transition-all duration-500 ease-in-out
-          ${isTransparent
-            ? "bg-transparent border-b border-white/10"
-            : "bg-white dark:bg-[#0f1117] backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800"
-          }
-        `}
-      >
+      <nav className={`w-full transition-all duration-500 ease-in-out ${navPosition}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
 
@@ -134,7 +133,6 @@ const Navbar = () => {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-all duration-200 ${isTransparent && isDark ? "text-white/90 hover:text-white hover:bg-white/20"
