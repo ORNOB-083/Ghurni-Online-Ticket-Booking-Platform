@@ -9,8 +9,7 @@ import {
     Plus, ArrowRight, Loader2, Store,
     AlertCircle
 } from 'lucide-react';
-import { authClient } from '@/lib/auth-client';
-import { useSession } from '@/lib/auth-client';
+import { authClient, useSession } from '@/lib/auth-client';
 
 const STATUS_CONFIG = {
     pending: { label: 'Pending', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock3 },
@@ -84,7 +83,7 @@ export default function VendorDashboardClient({ user: serverUser }) {
         },
         {
             label: 'Pending Approval',
-            value: tickets.filter(t => t.status === 'pending').length,
+            value: tickets.filter(t => t.verificationStatus === 'pending').length,
             icon: AlertCircle,
             color: 'text-amber-600 dark:text-amber-400',
             bg: 'bg-amber-50 dark:bg-amber-900/20',
@@ -295,12 +294,13 @@ export default function VendorDashboardClient({ user: serverUser }) {
                                     <th className="text-left pb-3 font-medium">Ticket</th>
                                     <th className="text-left pb-3 font-medium">Route</th>
                                     <th className="text-left pb-3 font-medium">Price</th>
+                                    {/* <th className="text-left pb-3 font-medium">Verification Status</th> */}
                                     <th className="text-left pb-3 font-medium">Status</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                                 {recentTickets.map((ticket, i) => {
-                                    const verify = VERIFY_CONFIG[ticket.status] || VERIFY_CONFIG.pending;
+                                    const verify = VERIFY_CONFIG[ticket.verificationStatus] || VERIFY_CONFIG.pending;
                                     return (
                                         <tr key={i}>
                                             <td className="py-3 pr-4">
