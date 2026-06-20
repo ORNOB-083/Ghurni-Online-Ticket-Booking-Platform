@@ -1,7 +1,11 @@
-export default function VendorDashboardPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Vendor Dashboard</h1>
-    </div>
-  );
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+import VendorDashboardClient from './VendorDashboardClient';
+
+export default async function VendorDashboardPage() {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  return <VendorDashboardClient user={session.user} />;
 }

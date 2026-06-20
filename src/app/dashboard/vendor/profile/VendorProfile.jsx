@@ -84,6 +84,7 @@ export default function VendorProfile({ user }) {
                 toast.error(error.message || 'Failed to update name');
                 return;
             }
+            await authClient.getSession({ fetchOptions: { cache: 'no-store' } });
             toast.success('Name updated!');
             setIsEditingName(false);
         } catch {
@@ -92,7 +93,6 @@ export default function VendorProfile({ user }) {
             setIsLoading(false);
         }
     };
-
     const handleSaveImage = async () => {
         if (!pendingImage) {
             toast.error('Please select or preview an image first');
