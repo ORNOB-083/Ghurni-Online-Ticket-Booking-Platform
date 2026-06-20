@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MapPin, Clock, Users, Star, ArrowRight, Bus, Train,
     Ship, Plane, Wifi, Wind, Utensils, Zap, Shield,
     Calendar, ChevronLeft, X, Plus, Minus, AlertCircle
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const TRANSPORT_CONFIG = {
     bus: { icon: Bus, color: 'from-emerald-500 to-teal-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-400' },
@@ -102,13 +104,53 @@ function BookModal({ ticket, onClose }) {
     const handleBook = async () => {
         setIsLoading(true);
         try {
-            // will wire up booking API later
-            setTimeout(() => {
-                setIsLoading(false);
+            const session = await authClient.getSession();
+            const token = session?.data?.session?.token;
+            const user = session?.data?.user;
+
+            if (!user) {
+                toast.error('Please sign in to book');
+                return;
+            }
+
+            const bookingData = {
+                ticketId: ticket._id,
+                ticketTitle: ticket.title,
+                image: ticket.image,
+                from: ticket.from,
+                to: ticket.to,
+                price: ticket.price,
+                quantity: quantity,
+                departureDate: ticket.departureDate,
+                departureTime: ticket.departureTime,
+                vendorEmail: ticket.vendorEmail,
+                userId: user.id,
+                userName: user.name,
+                userEmail: user.email,
+            };
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(bookingData)
+            });
+
+            const data = await res.json();
+
+            if (data.insertedId) {
+                toast.success('Booking confirmed! 🎉');
                 onClose();
                 router.push('/dashboard/user/booked-tickets');
-            }, 1000);
+            } else {
+                toast.error('Booking failed. Try again.');
+            }
         } catch (err) {
+            console.error(err);
+            toast.error('Something went wrong');
+        } finally {
             setIsLoading(false);
         }
     };
@@ -433,10 +475,10 @@ export default function TicketDetailsClient({ ticket }) {
                                 <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                                     <div
                                         className={`h-full rounded-full transition-all ${ticket.quantity > 20
-                                                ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
-                                                : ticket.quantity > 5
-                                                    ? 'bg-gradient-to-r from-amber-500 to-orange-400'
-                                                    : 'bg-gradient-to-r from-red-500 to-rose-400'
+                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                                            : ticket.quantity > 5
+                                                ? 'bg-gradient-to-r from-amber-500 to-orange-400'
+                                                : 'bg-gradient-to-r from-red-500 to-rose-400'
                                             }`}
                                         style={{ width: `${Math.min((ticket.quantity / 150) * 100, 100)}%` }}
                                     />
