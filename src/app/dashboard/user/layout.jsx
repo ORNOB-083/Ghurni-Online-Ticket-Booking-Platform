@@ -9,10 +9,10 @@ export default async function UserLayout({ children }) {
 
   if (!session) redirect('/auth/signin');
 
-  const role = session.user?.role;
+  const role = session.user?.role || 'user';
   console.log('role check:', role, typeof role);
 
-  if (role && role !== 'user') {
+  if (!role || role !== 'user') {
     redirect('/unauthorized');
   }
 

@@ -53,6 +53,7 @@ export default function SignupForm({ redirectTo = '/' }) {
         name: formData.fullName,
         email: formData.email,
         password: formData.password,
+        role: 'user',
       });
 
       if (error) {
