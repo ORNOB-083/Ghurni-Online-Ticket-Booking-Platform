@@ -6,10 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+import { useSession } from '@/lib/auth-client';
 import {
   LayoutDashboard, User, Ticket, BookOpen,
   CreditCard, Plus, ClipboardList, BarChart3,
-  Users, Settings, LogOut, ChevronLeft,
+  Users, LogOut, ChevronLeft,
   ChevronRight, Shield, Store, Menu, X
 } from 'lucide-react';
 
@@ -43,13 +44,16 @@ const ROLE_CONFIG = {
   admin: { label: 'Admin', color: 'from-red-500 to-rose-500', icon: Shield },
 };
 
-export default function DashboardSidebar({ user }) {
+export default function DashboardSidebar({ user: serverUser }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const user = session?.user || serverUser;
   const role = user?.role || 'user';
+  
   const links = NAV_LINKS[role] || NAV_LINKS.user;
   const roleConfig = ROLE_CONFIG[role] || ROLE_CONFIG.user;
   const RoleIcon = roleConfig.icon;
