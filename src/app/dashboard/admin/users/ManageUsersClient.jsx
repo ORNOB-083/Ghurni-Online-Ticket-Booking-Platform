@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import {
     Users, Search, Shield, Store, User,
     Loader2, CheckCircle, AlertTriangle,
-    Mail, Calendar, UserCheck, UserX
+    Mail, Calendar
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
@@ -46,12 +46,15 @@ export default function ManageUsersClient({ currentUser }) {
         fetchUsers();
     }, []);
 
+    const getToken = async () => {
+        const session = await authClient.getSession();
+        return session?.data?.session?.token;
+    };
+
     const fetchUsers = async () => {
         setIsLoading(true);
         try {
-            const session = await authClient.getSession();
-            const token = session?.data?.session?.token;
-
+            const token = await getToken();
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
                 { headers: { authorization: `Bearer ${token}` } }
@@ -70,26 +73,66 @@ export default function ManageUsersClient({ currentUser }) {
             toast.error("You can't change your own role!");
             return;
         }
-
         setActionLoading(userId + role);
         try {
-            const { error } = await authClient.admin.setRole({
-                userId,
-                role,
-            });
-
-            if (error) {
-                toast.error(error.message || 'Failed to update role');
-                return;
-            }
-
-            toast.success(`${userName} is now a ${role}!`);
-            setUsers(prev =>
-                prev.map(u => u.id === userId || u._id === userId
-                    ? { ...u, role }
-                    : u
-                )
+            const token = await getToken();
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/role`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ role })
+                }
             );
+            if (res.ok) {
+                toast.success(`${userName} is now a ${role}!`);
+                setUsers(prev =>
+                    prev.map(u =>
+                        (u.id === userId || u._id?.toString() === userId)
+                            ? { ...u, role }
+                            : u
+                    )
+                );
+            } else {
+                toast.error('Failed to update role');
+            }
+        } catch {
+            toast.error('Something went wrong');
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleFraud = async (userId, isFraud, userName) => {
+        setActionLoading(userId + 'fraud');
+        try {
+            const token = await getToken();
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/fraud`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ isFraud })
+                }
+            );
+            if (res.ok) {
+                toast.success(isFraud ? `${userName} marked as fraud!` : `${userName} fraud status removed!`);
+                setUsers(prev =>
+                    prev.map(u =>
+                        (u.id === userId || u._id?.toString() === userId)
+                            ? { ...u, isFraud }
+                            : u
+                    )
+                );
+            } else {
+                toast.error('Failed to update fraud status');
+            }
         } catch {
             toast.error('Something went wrong');
         } finally {
@@ -116,14 +159,9 @@ export default function ManageUsersClient({ currentUser }) {
     return (
         <div className="p-6 pt-8 max-w-7xl mx-auto space-y-6 mt-4">
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Manage Users</h1>
-                <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                    View and manage all platform users
-                </p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">View and manage all platform users</p>
             </motion.div>
 
             <motion.div
@@ -166,7 +204,7 @@ export default function ManageUsersClient({ currentUser }) {
                         className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-[#1a1d24] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/40 focus:border-red-400 transition-all"
                     />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                     {[
                         { value: 'all', label: 'All' },
                         { value: 'user', label: 'Travellers' },
@@ -177,8 +215,8 @@ export default function ManageUsersClient({ currentUser }) {
                             key={f.value}
                             onClick={() => setFilter(f.value)}
                             className={`px-3 py-2 rounded-xl text-xs font-medium transition-all ${filter === f.value
-                                    ? 'bg-red-500 text-white shadow-md'
-                                    : 'bg-white dark:bg-[#1a1d24] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400'
+                                ? 'bg-red-500 text-white shadow-md'
+                                : 'bg-white dark:bg-[#1a1d24] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400'
                                 }`}
                         >
                             {f.label}
@@ -219,29 +257,36 @@ export default function ManageUsersClient({ currentUser }) {
                                 {filtered.map((user, i) => {
                                     const roleConfig = ROLE_CONFIG[user.role] || ROLE_CONFIG.user;
                                     const RoleIcon = roleConfig.icon;
-                                    const isSelf = user.id === currentUser?.id || user._id === currentUser?.id;
+                                    const userId = user._id?.toString() || user.id;
+                                    const isSelf = userId === currentUser?.id;
 
                                     return (
                                         <motion.tr
-                                            key={user._id || user.id}
+                                            key={userId}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.02 }}
-                                            className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
+                                            className={`hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors ${user.isFraud ? 'bg-red-50/30 dark:bg-red-900/5' : ''}`}
                                         >
                                             <td className="px-4 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=6366f1&color=fff&size=36`}
-                                                        alt={user.name}
-                                                        className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
-                                                    />
+                                                    <div className="relative">
+                                                        <img
+                                                            src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=6366f1&color=fff&size=36`}
+                                                            alt={user.name || 'User'}
+                                                            className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
+                                                        />
+                                                        {user.isFraud && (
+                                                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
+                                                                <AlertTriangle className="w-2.5 h-2.5 text-white" />
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                     <div>
                                                         <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
                                                             {user.name}
-                                                            {isSelf && (
-                                                                <span className="text-xs text-indigo-500 font-medium">(You)</span>
-                                                            )}
+                                                            {isSelf && <span className="text-xs text-indigo-500 font-medium">(You)</span>}
+                                                            {user.isFraud && <span className="text-xs text-red-500 font-medium">⚠ Fraud</span>}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -287,53 +332,58 @@ export default function ManageUsersClient({ currentUser }) {
                                             </td>
 
                                             <td className="px-4 py-4">
-                                                <div className="flex items-center justify-end gap-2">
+                                                <div className="flex items-center justify-end gap-1.5 flex-wrap">
                                                     {isSelf ? (
                                                         <span className="text-xs text-gray-400 italic">Your account</span>
                                                     ) : (
                                                         <>
                                                             {user.role !== 'user' && (
                                                                 <button
-                                                                    onClick={() => handleRoleChange(user.id || user._id, 'user', user.name)}
-                                                                    disabled={actionLoading === (user.id || user._id) + 'user'}
+                                                                    onClick={() => handleRoleChange(userId, 'user', user.name)}
+                                                                    disabled={!!actionLoading}
                                                                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 transition-all disabled:opacity-50"
                                                                 >
-                                                                    {actionLoading === (user.id || user._id) + 'user' ? (
-                                                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                                                    ) : (
-                                                                        <User className="w-3 h-3" />
-                                                                    )}
-                                                                    Make Traveller
+                                                                    {actionLoading === userId + 'user' ? <Loader2 className="w-3 h-3 animate-spin" /> : <User className="w-3 h-3" />}
+                                                                    Traveller
                                                                 </button>
                                                             )}
 
                                                             {user.role !== 'vendor' && (
                                                                 <button
-                                                                    onClick={() => handleRoleChange(user.id || user._id, 'vendor', user.name)}
-                                                                    disabled={actionLoading === (user.id || user._id) + 'vendor'}
+                                                                    onClick={() => handleRoleChange(userId, 'vendor', user.name)}
+                                                                    disabled={!!actionLoading}
                                                                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-100 transition-all disabled:opacity-50"
                                                                 >
-                                                                    {actionLoading === (user.id || user._id) + 'vendor' ? (
-                                                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                                                    ) : (
-                                                                        <Store className="w-3 h-3" />
-                                                                    )}
-                                                                    Make Vendor
+                                                                    {actionLoading === userId + 'vendor' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Store className="w-3 h-3" />}
+                                                                    Vendor
                                                                 </button>
                                                             )}
 
                                                             {user.role !== 'admin' && (
                                                                 <button
-                                                                    onClick={() => handleRoleChange(user.id || user._id, 'admin', user.name)}
-                                                                    disabled={actionLoading === (user.id || user._id) + 'admin'}
+                                                                    onClick={() => handleRoleChange(userId, 'admin', user.name)}
+                                                                    disabled={!!actionLoading}
                                                                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-500 text-xs font-semibold hover:bg-red-100 transition-all disabled:opacity-50"
                                                                 >
-                                                                    {actionLoading === (user.id || user._id) + 'admin' ? (
-                                                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                                                    ) : (
-                                                                        <Shield className="w-3 h-3" />
-                                                                    )}
-                                                                    Make Admin
+                                                                    {actionLoading === userId + 'admin' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Shield className="w-3 h-3" />}
+                                                                    Admin
+                                                                </button>
+                                                            )}
+
+                                                            {user.role === 'vendor' && (
+                                                                <button
+                                                                    onClick={() => handleFraud(userId, !user.isFraud, user.name)}
+                                                                    disabled={!!actionLoading}
+                                                                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 ${user.isFraud
+                                                                        ? 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500'
+                                                                        : 'bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100'
+                                                                        }`}
+                                                                >
+                                                                    {actionLoading === userId + 'fraud'
+                                                                        ? <Loader2 className="w-3 h-3 animate-spin" />
+                                                                        : <AlertTriangle className="w-3 h-3" />
+                                                                    }
+                                                                    {user.isFraud ? 'Remove Fraud' : 'Mark Fraud'}
                                                                 </button>
                                                             )}
                                                         </>
