@@ -64,7 +64,7 @@ export default function TicketsClient({ initialParams }) {
             params.set('maxPrice', priceRange[1]);
             params.set('page', page);
             params.set('perPage', perPage);
-            params.set('status', 'approved');
+            params.set('verificationStatus', 'approved');
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tickets?${params.toString()}`);
             const data = await res.json();

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { authClient } from '@/lib/auth-client';
+import { useSession, authClient } from '@/lib/auth-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MapPin, Clock, Users, Star, ArrowRight, Bus, Train,
@@ -253,6 +253,9 @@ function BookModal({ ticket, onClose }) {
 
 export default function TicketDetailsClient({ ticket }) {
     const [showModal, setShowModal] = useState(false);
+    const { data: session } = useSession();
+    const user = session?.user;
+    const isUser = user?.role === 'user';
 
     const config = TRANSPORT_CONFIG[ticket.transportType] || TRANSPORT_CONFIG.bus;
     const TransportIcon = config.icon;
@@ -486,7 +489,17 @@ export default function TicketDetailsClient({ ticket }) {
                             </div>
 
                             <button
-                                onClick={() => setShowModal(true)}
+                                onClick={() => {
+                                    if (!user) {
+                                        toast.error('Please sign in to book a ticket');
+                                        return;
+                                    }
+                                    if (!isUser) {
+                                        toast.error('Only travellers can book tickets');
+                                        return;
+                                    }
+                                    setShowModal(true);
+                                }}
                                 disabled={isDisabled}
                                 className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-500 text-white font-semibold text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:from-indigo-500 hover:to-violet-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                             >
@@ -494,7 +507,11 @@ export default function TicketDetailsClient({ ticket }) {
                                     ? 'Sold Out'
                                     : isPast
                                         ? 'Booking Closed'
-                                        : 'Book Now'}
+                                        : !user
+                                            ? 'Sign In to Book'
+                                            : !isUser
+                                                ? 'Not Available for Your Role'
+                                                : 'Book Now'}
                             </button>
 
                             {!isDisabled && (
