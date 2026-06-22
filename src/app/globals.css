@@ -10,3 +10,7 @@ body {
   /* padding-top: 64px; */
   /* 16 * 4 = 64px to match navbar height */
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
