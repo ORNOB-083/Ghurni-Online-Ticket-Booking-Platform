@@ -282,9 +282,36 @@ export default function BookedTicketsClient({ user }) {
     }
   };
 
-  const handlePay = (booking) => {
-    // will wire up Stripe later
-    toast('Stripe payment coming soon!', { icon: '💳' });
+  const handlePay = async (booking) => {
+    console.log('Booking object:', booking); // check field names
+    try {
+      const totalAmount = booking.price * booking.quantity;
+      const serviceFee = Math.round(totalAmount * 0.03);
+      const grandTotal = totalAmount + serviceFee;
+
+      const res = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId: booking._id,
+          ticketTitle: booking.ticketTitle || booking.title || 'Ghurni Ticket',
+          amount: grandTotal,
+          quantity: booking.quantity,
+        })
+      });
+
+      const data = await res.json();
+      console.log('Checkout response:', data);
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error(data.error || 'Failed to initiate payment');
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      toast.error('Payment failed. Try again.');
+    }
   };
 
   const stats = {
