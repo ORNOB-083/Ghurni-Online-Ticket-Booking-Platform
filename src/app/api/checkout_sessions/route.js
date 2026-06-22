@@ -23,19 +23,19 @@ export async function POST(request) {
 
         // fallback to prevent empty name error
         const productName = ticketTitle || 'Ghurni Ticket'
-        const amountInUSD = Math.round((amount / 110) * 100)
+        const amountInBDT = Math.round(amount * 100)
 
         const checkoutSession = await stripe.checkout.sessions.create({
             customer_email: session.user.email,
             line_items: [
                 {
                     price_data: {
-                        currency: 'usd',
+                        currency: 'bdt',
                         product_data: {
                             name: productName,
                             description: `${quantity} ticket(s) — ৳${Number(amount).toLocaleString()} BDT`,
                         },
-                        unit_amount: amountInUSD,
+                        unit_amount: amountInBDT,
                     },
                     quantity: 1,
                 },

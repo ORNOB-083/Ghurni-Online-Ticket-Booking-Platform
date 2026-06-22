@@ -286,8 +286,8 @@ export default function BookedTicketsClient({ user }) {
     console.log('Booking object:', booking); // check field names
     try {
       const totalAmount = booking.price * booking.quantity;
-      const serviceFee = Math.round(totalAmount * 0.03);
-      const grandTotal = totalAmount + serviceFee;
+      /* const serviceFee = Math.round(totalAmount * 0.03);
+      const grandTotal = totalAmount + serviceFee; */
 
       const res = await fetch('/api/checkout_sessions', {
         method: 'POST',
@@ -295,7 +295,7 @@ export default function BookedTicketsClient({ user }) {
         body: JSON.stringify({
           bookingId: booking._id,
           ticketTitle: booking.ticketTitle || booking.title || 'Ghurni Ticket',
-          amount: grandTotal,
+          amount: totalAmount,
           quantity: booking.quantity,
         })
       });
