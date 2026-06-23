@@ -39,7 +39,7 @@ const slides = [
     title: 'Your Journey,',
     highlight: 'Our Priority',
     subtitle: 'Real-time tracking, secure Stripe payments, and 24/7 customer support — always with you.',
-    image: 'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    image: 'https://d2u0ktu8omkpf6.cloudfront.net/deab5d531957d73a0057d50d32f3babf269ef1c1fca30044.jpg',
   },
   {
     id: 4,

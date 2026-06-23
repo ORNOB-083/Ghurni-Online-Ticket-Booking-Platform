@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin, Star, Compass } from 'lucide-react';
 
 const PopularRoutes = () => {
   const popularRoutes = [
@@ -31,21 +32,21 @@ const PopularRoutes = () => {
       id: 4,
       from: 'Dhaka',
       to: 'Sundarbans',
-      image: 'https://images.pexels.com/photos/975771/pexels-photo-975771.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Sundarban_Tiger.jpg/1280px-Sundarban_Tiger.jpg',
       description: "Witness the world's largest mangrove forest & Royal Bengal Tigers.",
     },
     {
       id: 5,
       from: 'Dhaka',
       to: 'Chittagong',
-      image: 'https://images.pexels.com/photos/1098515/pexels-photo-1098515.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/06/75/bd/71.jpg',
       description: 'Discover the bustling port city and its beautiful hills.',
     },
     {
       id: 6,
       from: 'Dhaka',
       to: 'Bandarban',
-      image: 'https://images.pexels.com/photos/1416530/pexels-photo-1416530.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcOIfGSWbZDZ7DTnHVNX-OHER8m-9IcEh5XUxhCzwHFdXSuOjSWz62b1S1&s=10',
       description: 'Find peace among the highest peaks of Bangladesh.',
     },
   ];
@@ -54,16 +55,24 @@ const PopularRoutes = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.12 },
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
     visible: {
       opacity: 1,
+      scale: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20
+      },
     },
   };
 
@@ -102,47 +111,67 @@ const PopularRoutes = () => {
           <motion.div
             key={route.id}
             variants={itemVariants}
-            whileHover={{ y: -8, transition: { duration: 0.3, ease: 'easeOut' } }}
-            className="group relative bg-white dark:bg-[#1a1d24] rounded-2xl overflow-hidden
-              shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_32px_rgba(0,0,0,0.4)]
-              hover:shadow-[0_16px_48px_rgba(99,102,241,0.18)] dark:hover:shadow-[0_16px_48px_rgba(99,102,241,0.25)]
-              border border-gray-100 dark:border-gray-800
-              transition-shadow duration-500"
+            whileHover={{ y: -6, boxShadow: "0px 16px 40px rgba(99, 102, 241, 0.15)" }}
+            whileTap={{ scale: 0.96 }}
+            className="group relative bg-white dark:bg-[#1a1d24] rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-md cursor-pointer"
           >
-            <div className="relative h-52 w-full overflow-hidden">
+            <div className="relative h-[320px] md:h-[340px] w-full overflow-hidden">
               <Image
                 src={route.image}
                 alt={`${route.from} to ${route.to}`}
                 fill
-                className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-500" />
 
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-xs font-medium text-white border border-white/10">
-                Popular
-              </div>
+              <motion.div
+                animate={{ rotate: [0, 5, 0, -5, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-amber-400 flex items-center gap-1.5 text-xs font-medium"
+              >
+                <Star className="w-3 h-3 fill-current" />
+                Best Route
+              </motion.div>
 
-              <div className="absolute bottom-4 left-4 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-semibold text-white">
+              <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                 <MapPin className="w-3 h-3 text-cyan-400 flex-shrink-0" />
-                <span>{route.from}</span>
+                <span className="text-white text-sm font-semibold">{route.from}</span>
                 <ArrowRight className="w-3 h-3 text-cyan-400" />
-                <span>{route.to}</span>
+                <span className="text-white text-sm font-semibold">{route.to}</span>
               </div>
             </div>
 
-            <div className="p-5">
-              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-1.5 flex items-center gap-2">
-                {route.from}
+            <motion.div
+              initial={{ y: 60, opacity: 0 }}
+              whileHover={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-x-0 bottom-0 p-5 pt-10 bg-gradient-to-t from-black/90 via-black/70 to-transparent"
+            >
+              <h3 className="text-white text-lg font-bold mb-1.5 flex items-center gap-2">
+                <span>{route.from}</span>
                 <ArrowRight className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-                {route.to}
+                <span>{route.to}</span>
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+              <p className="text-gray-300 text-sm leading-relaxed line-clamp-2 mb-3">
                 {route.description}
               </p>
 
-              <div className="mt-4 h-0.5 w-0 group-hover:w-full bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full transition-all duration-500 ease-out" />
+              <Link
+                href={`/tickets?from=${route.from}&to=${route.to}`}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500 transition-colors"
+              >
+                <Compass className="w-3 h-3" />
+                Explore Route
+              </Link>
+            </motion.div>
+
+            <div className="absolute bottom-4 left-4 right-4 sm:hidden group-hover:hidden block">
+              <p className="text-white text-sm font-medium drop-shadow-md truncate">
+                {route.from} → {route.to}
+              </p>
             </div>
+
           </motion.div>
         ))}
       </motion.div>
