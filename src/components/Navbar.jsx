@@ -107,8 +107,8 @@ const Navbar = () => {
 
             <div className="hidden md:flex items-center justify-center flex-1 mx-8">
               <div className={`flex items-center space-x-1 rounded-full p-1 transition-all duration-500 ${isTransparent && isDark ? "bg-white/10 backdrop-blur-sm"
-                  : isTransparent && !isDark ? "bg-black/10 backdrop-blur-sm"
-                    : "bg-gray-100 dark:bg-gray-800/60"
+                : isTransparent && !isDark ? "bg-black/10 backdrop-blur-sm"
+                  : "bg-gray-100 dark:bg-gray-800/60"
                 }`}>
                 {navLinks.map((link) => {
                   const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
@@ -117,12 +117,12 @@ const Navbar = () => {
                       key={link.name}
                       href={link.href}
                       className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${isActive
-                          ? "text-white bg-gradient-to-r from-indigo-600 to-indigo-500 shadow-md"
-                          : isTransparent && isDark
-                            ? "text-white/90 hover:text-white hover:bg-white/20"
-                            : isTransparent && !isDark
-                              ? "text-gray-800 hover:text-indigo-600 hover:bg-black/10"
-                              : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700"
+                        ? "text-white bg-gradient-to-r from-indigo-600 to-indigo-500 shadow-md"
+                        : isTransparent && isDark
+                          ? "text-white/90 hover:text-white hover:bg-white/20"
+                          : isTransparent && !isDark
+                            ? "text-gray-800 hover:text-indigo-600 hover:bg-black/10"
+                            : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700"
                         }`}
                     >
                       {link.name}
@@ -136,8 +136,8 @@ const Navbar = () => {
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-all duration-200 ${isTransparent && isDark ? "text-white/90 hover:text-white hover:bg-white/20"
-                    : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
               >
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -150,8 +150,8 @@ const Navbar = () => {
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200 ${isTransparent
-                        ? "border-white/20 bg-white/10 hover:bg-white/20"
-                        : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      ? "border-white/20 bg-white/10 hover:bg-white/20"
+                      : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
                       }`}
                   >
                     <img
@@ -194,7 +194,7 @@ const Navbar = () => {
                             Dashboard
                           </Link>
                           <Link
-                            href="/dashboard/user/profile"
+                            href={`/dashboard/${user?.role || 'user'}/profile`}
                             onClick={() => setIsDropdownOpen(false)}
                             className="flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl transition-all"
                           >
@@ -218,8 +218,8 @@ const Navbar = () => {
                   <Link
                     href="/auth/signin"
                     className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${isTransparent && isDark ? "text-white hover:bg-white/20"
-                        : isTransparent && !isDark ? "text-gray-800 hover:text-indigo-600 hover:bg-black/10"
-                          : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      : isTransparent && !isDark ? "text-gray-800 hover:text-indigo-600 hover:bg-black/10"
+                        : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800"
                       }`}
                   >
                     Login
@@ -238,8 +238,8 @@ const Navbar = () => {
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-colors ${isTransparent && isDark ? "text-white hover:bg-white/20"
-                    : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
               >
                 {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -256,8 +256,8 @@ const Navbar = () => {
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={`p-2 rounded-full transition-colors ${isTransparent && isDark ? "text-white hover:bg-white/20"
-                    : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
-                      : "text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
+                    : "text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
               >
                 <div className="w-6 h-6 flex flex-col justify-center items-center gap-1.5">
@@ -307,8 +307,8 @@ const Navbar = () => {
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`block px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${isActive
-                          ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-500"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400"
+                        ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-500"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400"
                         }`}
                     >
                       {link.name}

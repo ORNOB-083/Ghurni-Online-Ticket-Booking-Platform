@@ -273,8 +273,8 @@ export default function AdminProfile({ user: serverUser }) {
                             <button
                                 onClick={() => setImageTab('upload')}
                                 className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${imageTab === 'upload'
-                                        ? 'bg-white dark:bg-[#1a1d24] text-red-600 dark:text-red-400 shadow-sm'
-                                        : 'text-gray-500 dark:text-gray-400'
+                                    ? 'bg-white dark:bg-[#1a1d24] text-red-600 dark:text-red-400 shadow-sm'
+                                    : 'text-gray-500 dark:text-gray-400'
                                     }`}
                             >
                                 <Upload className="w-4 h-4" />
@@ -283,8 +283,8 @@ export default function AdminProfile({ user: serverUser }) {
                             <button
                                 onClick={() => setImageTab('link')}
                                 className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${imageTab === 'link'
-                                        ? 'bg-white dark:bg-[#1a1d24] text-red-600 dark:text-red-400 shadow-sm'
-                                        : 'text-gray-500 dark:text-gray-400'
+                                    ? 'bg-white dark:bg-[#1a1d24] text-red-600 dark:text-red-400 shadow-sm'
+                                    : 'text-gray-500 dark:text-gray-400'
                                     }`}
                             >
                                 <Link className="w-4 h-4" />
