@@ -103,7 +103,7 @@ const HeroSlider = () => {
         ))}
       </Swiper>
 
-      <div className="absolute inset-0 z-20 flex flex-col justify-center px-6 sm:px-12 lg:px-20">
+      <div className="absolute inset-0 z-20 flex flex-col md:justify-center justify-start px-6 sm:px-12 lg:px-20 pt-24 md:pt-0 pb-32 md:pb-0">
         <div className="max-w-7xl mx-auto w-full">
           <AnimatePresence mode="wait">
             <motion.div
@@ -183,11 +183,10 @@ const HeroSlider = () => {
               <button
                 key={type.value}
                 onClick={() => setTransport(type.value)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
-                  transport === type.value
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
-                    : 'bg-white/10 backdrop-blur-md text-white/70 hover:bg-white/20 border border-white/10'
-                }`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${transport === type.value
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
+                  : 'bg-white/10 backdrop-blur-md text-white/70 hover:bg-white/20 border border-white/10'
+                  }`}
               >
                 <type.icon className="w-3 h-3" />
                 {type.label}
@@ -243,7 +242,7 @@ const HeroSlider = () => {
         </motion.div>
       </div>
 
-      <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white text-xs font-medium">
+      <div className="absolute top-20 right-6 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white text-xs font-medium">
         <span className="text-indigo-400">{activeIndex + 1}</span>
         <span className="text-white/30">/</span>
         <span>{slides.length}</span>
