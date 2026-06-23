@@ -1,7 +1,8 @@
-export default function UserDashboardPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-10xl mt-100 font-bold text-gray-900 dark:text-gray-100">User Dashboard</h1>
-    </div>
-  );
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+import UserOverviewClient from './UserOverviewClient';
+
+export default async function UserDashboardPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  return <UserOverviewClient user={session.user} />;
 }
