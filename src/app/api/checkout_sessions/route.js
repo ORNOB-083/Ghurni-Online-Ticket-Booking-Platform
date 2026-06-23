@@ -48,7 +48,7 @@ export async function POST(request) {
                 originalAmountBDT: amount?.toString(),
             },
             success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${origin}/dashboard/user/booked-tickets`,
+            cancel_url: `${origin}/payment/cancel`,
         });
 
         return NextResponse.json({ url: checkoutSession.url })
