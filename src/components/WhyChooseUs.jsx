@@ -68,23 +68,6 @@ const WhyChooseUs = () => {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
-
   return (
     <section className="relative py-24 overflow-hidden">
 
@@ -115,47 +98,71 @@ const WhyChooseUs = () => {
           </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {features.map((feature) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, index) => (
             <motion.div
               key={feature.id}
-              variants={itemVariants}
-              whileHover={{ y: -6, transition: { duration: 0.3 } }}
+              initial={{ opacity: 0, rotateY: 90, transformPerspective: 1000 }}
+              whileInView={{
+                opacity: 1,
+                rotateY: 0,
+                transformPerspective: 1000,
+                transition: {
+                  duration: 0.8,
+                  delay: index * 0.1,
+                  ease: [0.22, 1, 0.36, 1]
+                }
+              }}
+              viewport={{ once: true, amount: 0.2 }}
+              whileHover={{
+                y: -8,
+                rotateY: -6,
+                boxShadow: "0px 20px 40px rgba(0,0,0,0.08)",
+                transition: { duration: 0.2 }
+              }}
               className="group relative bg-white dark:bg-[#1a1d24] rounded-2xl p-6
                 border border-gray-100 dark:border-gray-800
-                shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_32px_rgba(0,0,0,0.3)]
-                hover:shadow-[0_16px_48px_rgba(99,102,241,0.15)] dark:hover:shadow-[0_16px_48px_rgba(99,102,241,0.2)]
-                transition-all duration-500 overflow-hidden"
+                shadow-sm hover:shadow-2xl
+                transition-shadow duration-500 overflow-hidden
+                transform-gpu"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-500 rounded-2xl`} />
 
-              <div className={`relative w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} ${feature.shadow} shadow-lg flex items-center justify-center mb-5`}>
-                <feature.icon className="w-5 h-5 text-white" />
+              <div className="flex flex-col items-start">
+                <motion.div
+                  className={`relative w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} ${feature.shadow} shadow-lg flex items-center justify-center mb-5`}
+                  animate={{
+                    scale: [1, 1.06, 1],
+                    boxShadow: ["0px 8px 24px rgba(99,102,241,0)", "0px 8px 24px rgba(99,102,241,0.2)", "0px 8px 24px rgba(99,102,241,0)"]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: index * 0.4,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <feature.icon className="w-5 h-5 text-white" />
+                </motion.div>
+
+                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
 
-              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                {feature.description}
-              </p>
-
-              <div className={`mt-5 h-0.5 w-0 group-hover:w-full bg-gradient-to-r ${feature.gradient} rounded-full transition-all duration-500 ease-out`} />
+              <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-b-2xl`} />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
         >
           {[
@@ -164,17 +171,24 @@ const WhyChooseUs = () => {
             { value: '99.9%', label: 'Uptime Guaranteed' },
             { value: '4.9★', label: 'Average Rating' },
           ].map((stat, i) => (
-            <div
+            <motion.div
               key={i}
-              className="text-center p-5 rounded-2xl bg-white dark:bg-[#1a1d24] border border-gray-100 dark:border-gray-800 shadow-sm"
+              whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+              className="text-center p-6 rounded-2xl bg-white dark:bg-[#1a1d24] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
-              <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent mb-1">
+              <motion.p
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 200, damping: 20, delay: i * 0.1 }}
+                className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent mb-1"
+              >
                 {stat.value}
-              </p>
+              </motion.p>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                 {stat.label}
               </p>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 
