@@ -294,8 +294,8 @@ export default function AddTicketClient({ user }) {
                 key={value}
                 onClick={() => handleTransportType(value)}
                 className={`flex flex-col items-center gap-2 py-3 rounded-xl border-2 text-sm font-medium transition-all ${form.transportType === value
-                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
-                    : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-emerald-300 hover:text-emerald-500'
+                  ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
+                  : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-emerald-300 hover:text-emerald-500'
                   }`}
               >
                 <Icon className="w-5 h-5" />
@@ -379,8 +379,8 @@ export default function AddTicketClient({ user }) {
                   key={perk}
                   onClick={() => handlePerkToggle(perk)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${selected
-                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
-                      : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-emerald-300'
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
+                    : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-emerald-300'
                     }`}
                 >
                   {selected ? <CheckCircle className="w-3 h-3" /> : <Tag className="w-3 h-3" />}
@@ -437,8 +437,8 @@ export default function AddTicketClient({ user }) {
                 <button
                   onClick={() => setImageTab('upload')}
                   className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${imageTab === 'upload'
-                      ? 'bg-white dark:bg-[#1a1d24] text-emerald-600 dark:text-emerald-400 shadow-sm'
-                      : 'text-gray-500 dark:text-gray-400'
+                    ? 'bg-white dark:bg-[#1a1d24] text-emerald-600 dark:text-emerald-400 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400'
                     }`}
                 >
                   <Upload className="w-4 h-4" />
@@ -447,8 +447,8 @@ export default function AddTicketClient({ user }) {
                 <button
                   onClick={() => setImageTab('link')}
                   className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${imageTab === 'link'
-                      ? 'bg-white dark:bg-[#1a1d24] text-emerald-600 dark:text-emerald-400 shadow-sm'
-                      : 'text-gray-500 dark:text-gray-400'
+                    ? 'bg-white dark:bg-[#1a1d24] text-emerald-600 dark:text-emerald-400 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400'
                     }`}
                 >
                   <LinkIcon className="w-4 h-4" />
