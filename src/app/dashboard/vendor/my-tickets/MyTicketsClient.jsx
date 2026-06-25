@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
+import { updateTicket, deleteTicket } from '@/lib/actions/tickets';
 
 const VERIFY_CONFIG = {
     pending: { label: 'Pending Review', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-200 dark:border-amber-800', icon: Clock3 },
@@ -190,7 +191,6 @@ function EditModal({ ticket, onSave, onCancel, isLoading }) {
                 </div>
 
                 <div className="p-6 space-y-5">
-
                     <div>
                         <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">Ticket Title</label>
                         <div className="relative">
@@ -338,7 +338,6 @@ function EditModal({ ticket, onSave, onCancel, isLoading }) {
 
                     <div>
                         <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">Ticket Image</label>
-
                         {imagePreview && (
                             <div className="mb-3 space-y-2">
                                 <div className="relative w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -370,7 +369,6 @@ function EditModal({ ticket, onSave, onCancel, isLoading }) {
                                 )}
                             </div>
                         )}
-
                         {!imagePreview && (
                             <>
                                 <div className="flex gap-2 mb-3 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
@@ -395,7 +393,6 @@ function EditModal({ ticket, onSave, onCancel, isLoading }) {
                                         Image Link
                                     </button>
                                 </div>
-
                                 {imageTab === 'upload' ? (
                                     <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-emerald-400 rounded-xl p-6 cursor-pointer transition-all group">
                                         <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -488,21 +485,16 @@ export default function MyTicketsClient({ user }) {
         if (!deleteTarget) return;
         setIsDeleting(true);
         try {
-            const session = await authClient.getSession();
-            const token = session?.data?.session?.token;
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/tickets/${deleteTarget._id}`,
-                { method: 'DELETE', headers: { authorization: `Bearer ${token}` } }
-            );
-            if (res.ok) {
+            const result = await deleteTicket(deleteTarget._id);
+            if (result?.deletedCount || result?.acknowledged) {
                 toast.success('Ticket deleted!');
                 setTickets(prev => prev.filter(t => t._id !== deleteTarget._id));
                 setDeleteTarget(null);
             } else {
                 toast.error('Failed to delete ticket');
             }
-        } catch {
-            toast.error('Something went wrong');
+        } catch (err) {
+            toast.error(err.message || 'Something went wrong');
         } finally {
             setIsDeleting(false);
         }
@@ -512,36 +504,25 @@ export default function MyTicketsClient({ user }) {
         if (!editTarget) return;
         setIsEditing(true);
         try {
-            const session = await authClient.getSession();
-            const token = session?.data?.session?.token;
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/tickets/${editTarget._id}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        ...formData,
-                        price: parseFloat(formData.price),
-                        quantity: parseInt(formData.quantity),
-                    })
-                }
-            );
-            if (res.ok) {
+            const data = {
+                ...formData,
+                price: parseFloat(formData.price),
+                quantity: parseInt(formData.quantity),
+            };
+            const result = await updateTicket(editTarget._id, data);
+            if (result?.acknowledged) {
                 toast.success('Ticket updated!');
                 setTickets(prev => prev.map(t =>
                     t._id === editTarget._id
-                        ? { ...t, ...formData, price: parseFloat(formData.price), quantity: parseInt(formData.quantity) }
+                        ? { ...t, ...data }
                         : t
                 ));
                 setEditTarget(null);
             } else {
                 toast.error('Failed to update ticket');
             }
-        } catch {
-            toast.error('Something went wrong');
+        } catch (err) {
+            toast.error(err.message || 'Something went wrong');
         } finally {
             setIsEditing(false);
         }
@@ -560,7 +541,6 @@ export default function MyTicketsClient({ user }) {
 
     return (
         <div className="p-6 pt-8 max-w-6xl mx-auto space-y-6 mt-4">
-
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -745,7 +725,6 @@ export default function MyTicketsClient({ user }) {
                     />
                 )}
             </AnimatePresence>
-
         </div>
     );
 }
