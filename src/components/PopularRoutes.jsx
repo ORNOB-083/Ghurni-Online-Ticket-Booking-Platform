@@ -18,14 +18,14 @@ const PopularRoutes = () => {
       id: 2,
       from: 'Dhaka',
       to: 'Sylhet',
-      image: 'https://images.pexels.com/photos/1007426/pexels-photo-1007426.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: 'https://res.cloudinary.com/jerrick/image/upload/d_642250b563292b35f27461a7.png,f_jpg,q_auto,w_720/666fd97d3b1ca0001d5e7e35.jpg',
       description: 'Visit the majestic tea gardens & the shrine of Hazrat Shah Jalal.',
     },
     {
       id: 3,
       from: 'Dhaka',
-      to: 'Sajek Valley',
-      image: 'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=800',
+      to: 'Barishal',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Guthia_mosque%2CBarisal.jpg',
       description: 'Experience the breathtaking beauty of the hill tracts.',
     },
     {

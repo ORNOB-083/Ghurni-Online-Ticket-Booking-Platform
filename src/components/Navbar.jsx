@@ -107,7 +107,7 @@ const Navbar = () => {
 
             <div className="hidden md:flex items-center justify-center flex-1 mx-8">
               <div className={`flex items-center space-x-1 rounded-full p-1 transition-all duration-500 ${isTransparent && isDark ? "bg-white/10 backdrop-blur-sm"
-                : isTransparent && !isDark ? "bg-black/10 backdrop-blur-sm"
+                : isTransparent && !isDark ? "bg-black/30 backdrop-blur-sm"
                   : "bg-gray-100 dark:bg-gray-800/60"
                 }`}>
                 {navLinks.map((link) => {
@@ -121,8 +121,8 @@ const Navbar = () => {
                         : isTransparent && isDark
                           ? "text-white/90 hover:text-white hover:bg-white/20"
                           : isTransparent && !isDark
-                            ? "text-gray-800 hover:text-indigo-600 hover:bg-black/10"
-                            : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-gray-700"
+                            ? "text-white drop-shadow-sm hover:text-white hover:bg-black/40" 
+                            : "text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-200 dark:hover:bg-gray-700"
                         }`}
                     >
                       {link.name}
@@ -136,7 +136,7 @@ const Navbar = () => {
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-all duration-200 ${isTransparent && isDark ? "text-white/90 hover:text-white hover:bg-white/20"
-                  : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
+                  : isTransparent && !isDark ? "text-white hover:bg-black/40"
                     : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
               >
@@ -218,7 +218,7 @@ const Navbar = () => {
                   <Link
                     href="/auth/signin"
                     className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${isTransparent && isDark ? "text-white hover:bg-white/20"
-                      : isTransparent && !isDark ? "text-gray-800 hover:text-indigo-600 hover:bg-black/10"
+                      : isTransparent && !isDark ? "text-white hover:bg-black/40"
                         : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-800"
                       }`}
                   >
@@ -238,7 +238,7 @@ const Navbar = () => {
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-colors ${isTransparent && isDark ? "text-white hover:bg-white/20"
-                  : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
+                  : isTransparent && !isDark ? "text-white hover:bg-black/40"
                     : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
               >
@@ -256,7 +256,7 @@ const Navbar = () => {
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={`p-2 rounded-full transition-colors ${isTransparent && isDark ? "text-white hover:bg-white/20"
-                  : isTransparent && !isDark ? "text-gray-800 hover:bg-black/10"
+                  : isTransparent && !isDark ? "text-white hover:bg-black/40"
                     : "text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
               >
