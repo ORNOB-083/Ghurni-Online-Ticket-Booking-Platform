@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
+import { updateBookingStatus } from '@/lib/actions/bookings';
 
 const STATUS_CONFIG = {
     pending: {
@@ -75,22 +76,8 @@ export default function RequestedBookingsClient({ user }) {
     const handleAction = async (bookingId, status) => {
         setActionLoading(bookingId + status);
         try {
-            const session = await authClient.getSession();
-            const token = session?.data?.session?.token;
-
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ status })
-                }
-            );
-
-            if (res.ok) {
+            const result = await updateBookingStatus(bookingId, status);
+            if (result?.acknowledged) {
                 toast.success(`Booking ${status}!`);
                 setBookings(prev =>
                     prev.map(b => b._id === bookingId ? { ...b, status } : b)
@@ -98,8 +85,8 @@ export default function RequestedBookingsClient({ user }) {
             } else {
                 toast.error('Action failed');
             }
-        } catch {
-            toast.error('Something went wrong');
+        } catch (err) {
+            toast.error(err.message || 'Something went wrong');
         } finally {
             setActionLoading(null);
         }
@@ -183,8 +170,8 @@ export default function RequestedBookingsClient({ user }) {
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all ${filter === f
-                                    ? 'bg-emerald-600 text-white shadow-md'
-                                    : 'bg-white dark:bg-[#1a1d24] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400'
+                                ? 'bg-emerald-600 text-white shadow-md'
+                                : 'bg-white dark:bg-[#1a1d24] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400'
                                 }`}
                         >
                             {f} {f !== 'all' && counts[f] > 0 && `(${counts[f]})`}
