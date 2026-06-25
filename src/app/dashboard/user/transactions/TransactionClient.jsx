@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   CreditCard, Loader2, ArrowRight,
-  Calendar, Hash, Ticket, TrendingUp
+  Calendar, Hash, Ticket, TrendingUp, Download
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
@@ -38,6 +38,45 @@ export default function TransactionClient({ user }) {
   };
 
   const totalSpent = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  const handleDownload = async (tx) => {
+    const bookingId = tx.bookingId || tx._id;
+
+    if (!bookingId) {
+      toast.error("Booking ID not found for this transaction.");
+      return;
+    }
+
+    try {
+      const session = await authClient.getSession();
+      const token = session?.data?.session?.token;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/ticket-pdf`,
+        { headers: { authorization: `Bearer ${token}` } }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || `Server error: ${res.status}`);
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ticket-${bookingId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Ticket downloaded successfully!');
+    } catch (err) {
+      console.error('Download Error Details:', err.message);
+      toast.error(err.message || 'Could not download ticket. Please try again.');
+    }
+  };
 
   return (
     <div className="p-6 pt-8 max-w-5xl mx-auto space-y-6 mt-4">
@@ -96,6 +135,7 @@ export default function TransactionClient({ user }) {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Amount</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Date</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Status</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Ticket</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
@@ -143,15 +183,19 @@ export default function TransactionClient({ user }) {
                         ✓ Paid
                       </span>
                     </td>
+                    <td className="px-4 py-4 text-center">
+                      <button
+                        onClick={() => handleDownload(tx)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors text-xs font-medium"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        PDF
+                      </button>
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>
             </table>
-          </div>
-          <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
-            <p className="text-xs text-gray-400">
-              Total: <span className="font-semibold text-gray-600 dark:text-gray-300">{transactions.length}</span> transactions
-            </p>
           </div>
         </motion.div>
       )}
