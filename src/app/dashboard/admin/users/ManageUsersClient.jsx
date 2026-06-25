@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
+import { updateUserRole, markAsFraud } from '@/lib/actions/users';
 
 const ROLE_CONFIG = {
     user: {
@@ -75,19 +76,8 @@ export default function ManageUsersClient({ currentUser }) {
         }
         setActionLoading(userId + role);
         try {
-            const token = await getToken();
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/role`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ role })
-                }
-            );
-            if (res.ok) {
+            const result = await updateUserRole(userId, role);
+            if (result?.acknowledged) {
                 toast.success(`${userName} is now a ${role}!`);
                 setUsers(prev =>
                     prev.map(u =>
@@ -99,8 +89,8 @@ export default function ManageUsersClient({ currentUser }) {
             } else {
                 toast.error('Failed to update role');
             }
-        } catch {
-            toast.error('Something went wrong');
+        } catch (err) {
+            toast.error(err.message || 'Something went wrong');
         } finally {
             setActionLoading(null);
         }
@@ -109,19 +99,8 @@ export default function ManageUsersClient({ currentUser }) {
     const handleFraud = async (userId, isFraud, userName) => {
         setActionLoading(userId + 'fraud');
         try {
-            const token = await getToken();
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/fraud`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ isFraud })
-                }
-            );
-            if (res.ok) {
+            const result = await markAsFraud(userId, isFraud);
+            if (result?.acknowledged) {
                 toast.success(isFraud ? `${userName} marked as fraud!` : `${userName} fraud status removed!`);
                 setUsers(prev =>
                     prev.map(u =>
@@ -133,8 +112,8 @@ export default function ManageUsersClient({ currentUser }) {
             } else {
                 toast.error('Failed to update fraud status');
             }
-        } catch {
-            toast.error('Something went wrong');
+        } catch (err) {
+            toast.error(err.message || 'Something went wrong');
         } finally {
             setActionLoading(null);
         }
