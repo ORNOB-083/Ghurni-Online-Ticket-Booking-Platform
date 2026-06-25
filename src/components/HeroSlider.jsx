@@ -25,14 +25,15 @@ const slides = [
     title: 'Explore Bangladesh',
     highlight: 'with Ghurni',
     subtitle: "From the beaches of Cox's Bazar to the hills of Bandarban — book your journey in minutes.",
-    image: 'https://images.pexels.com/photos/1430676/pexels-photo-1430676.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    image: 'https://images.unsplash.com/photo-1608958435020-e8a7109ba809?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y294cyUyMGJhemFyfGVufDB8fDB8fHww',
   },
+  //https://images.unsplash.com/photo-1619177383949-f03975e50b19?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
   {
     id: 2,
     title: 'Fast & Secure',
     highlight: 'Ticket Booking',
     subtitle: 'Book bus, train, launch, and plane tickets seamlessly with real-time availability.',
-    image: 'https://images.pexels.com/photos/3473492/pexels-photo-3473492.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    image: 'https://images.pexels.com/photos/1430676/pexels-photo-1430676.jpeg?auto=compress&cs=tinysrgb&w=1600',
   },
   {
     id: 3,

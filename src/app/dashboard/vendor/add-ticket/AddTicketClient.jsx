@@ -9,8 +9,8 @@ import {
   X, Link as LinkIcon, AlertTriangle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { createTicket } from '@/lib/actions/tickets';
 
 const TRANSPORT_TYPES = [
   { value: 'bus', label: 'Bus', icon: Bus },
@@ -154,9 +154,6 @@ export default function AddTicketClient({ user }) {
 
     setIsLoading(true);
     try {
-      const s = await authClient.getSession();
-      const token = s?.data?.session?.token;
-
       const ticketData = {
         ...form,
         price: parseFloat(form.price),
@@ -165,23 +162,16 @@ export default function AddTicketClient({ user }) {
         vendorEmail: user?.email,
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tickets`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(ticketData)
-      });
+      const result = await createTicket(ticketData);
 
-      if (res.ok) {
+      if (result?.insertedId) {
         toast.success('Ticket submitted for approval!');
         router.push('/dashboard/vendor/my-tickets');
       } else {
-        const err = await res.json();
-        toast.error(err.message || 'Failed to add ticket');
+        toast.error(result?.message || 'Failed to add ticket');
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error('Something went wrong');
     } finally {
       setIsLoading(false);
@@ -226,7 +216,6 @@ export default function AddTicketClient({ user }) {
 
   return (
     <div className="p-6 pt-8 max-w-3xl mx-auto space-y-6 mt-4">
-
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Add New Ticket</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">

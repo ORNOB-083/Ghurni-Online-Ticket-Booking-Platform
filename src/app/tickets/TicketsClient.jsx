@@ -108,7 +108,7 @@ export default function TicketsClient({ initialParams }) {
         <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
 
             <div className="relative pt-24 pb-32 overflow-visible">
-                <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/1430676/pexels-photo-1430676.jpeg?auto=compress&cs=tinysrgb&w=1600')] bg-cover bg-center opacity-100" />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1619177383949-f03975e50b19?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center opacity-100" />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-transparent" />
 
                 <div className="absolute top-10 right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
