@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
     Bus, Train, Ship, Plane, ArrowRight,
     Tag, Users, Ticket, Clock,
@@ -153,6 +154,7 @@ export default function LatestTickets() {
     const [tickets, setTickets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const sectionRef = useRef(null);
+    const pathname = usePathname();
 
     // Parallax effect for background blobs
     const { scrollYProgress } = useScroll({
@@ -163,6 +165,7 @@ export default function LatestTickets() {
     const y2 = useTransform(scrollYProgress, [0, 1], [-60, 60]);
 
     const fetchLatest = useCallback(async () => {
+        setIsLoading(true);
         try {
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/tickets?verificationStatus=approved&perPage=8`
@@ -177,9 +180,11 @@ export default function LatestTickets() {
     }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        fetchLatest();
-    }, [fetchLatest]);
+        if (pathname === '/') {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            fetchLatest();
+        }
+    }, [pathname, fetchLatest]);
 
     if (!isLoading && tickets.length === 0) return null;
 
