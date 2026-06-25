@@ -11,6 +11,7 @@ import {
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
+import { verifyTicket, deleteTicket } from '@/lib/actions/tickets';
 
 const VERIFY_CONFIG = {
   pending: { label: 'Pending', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-200 dark:border-amber-800', icon: Clock3 },
@@ -54,33 +55,17 @@ export default function ManageTicketsClient() {
   const handleVerify = async (ticketId, verificationStatus) => {
     setActionLoading(ticketId + verificationStatus);
     try {
-      const session = await authClient.getSession();
-      const token = session?.data?.session?.token;
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/tickets/${ticketId}/verify`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ verificationStatus })
-        }
-      );
-
-      if (res.ok) {
+      const result = await verifyTicket(ticketId, verificationStatus);
+      if (result?.acknowledged) {
         toast.success(`Ticket ${verificationStatus}!`);
         setTickets(prev =>
-          prev.map(t =>
-            t._id === ticketId ? { ...t, verificationStatus } : t
-          )
+          prev.map(t => t._id === ticketId ? { ...t, verificationStatus } : t)
         );
       } else {
         toast.error('Action failed');
       }
-    } catch {
-      toast.error('Something went wrong');
+    } catch (err) {
+      toast.error(err.message || 'Something went wrong');
     } finally {
       setActionLoading(null);
     }
@@ -90,25 +75,15 @@ export default function ManageTicketsClient() {
     if (!confirm('Delete this ticket permanently?')) return;
     setActionLoading(ticketId + 'delete');
     try {
-      const session = await authClient.getSession();
-      const token = session?.data?.session?.token;
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/tickets/${ticketId}`,
-        {
-          method: 'DELETE',
-          headers: { authorization: `Bearer ${token}` }
-        }
-      );
-
-      if (res.ok) {
+      const result = await deleteTicket(ticketId);
+      if (result?.deletedCount || result?.acknowledged) {
         toast.success('Ticket deleted!');
         setTickets(prev => prev.filter(t => t._id !== ticketId));
       } else {
         toast.error('Failed to delete');
       }
-    } catch {
-      toast.error('Something went wrong');
+    } catch (err) {
+      toast.error(err.message || 'Something went wrong');
     } finally {
       setActionLoading(null);
     }
@@ -117,9 +92,9 @@ export default function ManageTicketsClient() {
   const filtered = tickets.filter(t => {
     const matchSearch = search
       ? t.ticketTitle?.toLowerCase().includes(search.toLowerCase()) ||
-        t.from?.toLowerCase().includes(search.toLowerCase()) ||
-        t.to?.toLowerCase().includes(search.toLowerCase()) ||
-        t.vendorEmail?.toLowerCase().includes(search.toLowerCase())
+      t.from?.toLowerCase().includes(search.toLowerCase()) ||
+      t.to?.toLowerCase().includes(search.toLowerCase()) ||
+      t.vendorEmail?.toLowerCase().includes(search.toLowerCase())
       : true;
     const matchFilter = filter === 'all' ? true : t.verificationStatus === filter;
     return matchSearch && matchFilter;
@@ -186,11 +161,10 @@ export default function ManageTicketsClient() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all ${
-                filter === f
+              className={`px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all ${filter === f
                   ? 'bg-red-500 text-white shadow-md'
                   : 'bg-white dark:bg-[#1a1d24] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400'
-              }`}
+                }`}
             >
               {f}
             </button>
