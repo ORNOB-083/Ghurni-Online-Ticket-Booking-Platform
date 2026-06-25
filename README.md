@@ -1,5 +1,9 @@
-# 🚌 Ghurni - Online Ticket Booking Platform
+<h1 align="center">
+  <img src="public/Image/Logo.png" alt="Ghurni Logo" width="30" height="30" style="vertical-align:middle; margin-right:12px;" />
+     Ghurni - Online Ticket Booking Platform
+</h1>
 
+![Express](https://img.shields.io/badge/Express-5.2.1-000000?style=for-the-badge&logo=express)
 ![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js)
 ![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?style=for-the-badge&logo=tailwind-css)
@@ -50,24 +54,30 @@ A full-stack Bengali travel ticket booking platform for bus, train, launch, and 
 ### Frontend
 | Package | Purpose |
 | :--- | :--- |
-| **Next.js 16** | React framework (App Router) |
+| **Next.js 16.2** | React framework (App Router) |
 | **React 19** | UI library |
-| **Tailwind CSS** | Styling & responsiveness |
+| **Tailwind CSS 4** | Styling & responsiveness |
 | **HeroUI** | Modern component library |
-| **Better Auth** | Authentication & session management |
-| **Framer Motion** | Premium page and element animations |
-| **Recharts** | Vendor revenue charts & analytics |
-| **Stripe.js** | Client-side payment processing |
+| **Better Auth 1.6** | Authentication & session management |
+| **Framer Motion 12.40** | Premium page and element animations |
+| **Swiper 12.2** | Hero slider & carousels |
+| **Lottie 2.4** | Hero section animations |
+| **Recharts 3.8** | Vendor revenue charts & analytics |
+| **Stripe.js 9.8** | Client-side payment processing |
 | **Lucide & React Icons** | Comprehensive icon set |
+| **react-hot-toast 2.6** | Elegant toast notifications |
+| **nextjs-toploader** | Page transition progress bar |
+| **imgbb API** | Ticket image hosting |
 
 ### Backend
 | Package | Purpose |
 | :--- | :--- |
-| **Express.js** | Node.js server framework |
-| **MongoDB (Native Driver)** | Database for tickets, users, bookings |
+| **Express 5.2** | Node.js server framework |
+| **MongoDB 7.3 (Native Driver)** | Database for tickets, users, bookings |
 | **CORS** | Cross-origin resource sharing |
 | **dotenv** | Environment variable management |
 | **Stripe** | Server-side payment intent processing |
+| **pdfkit** | Server-side PDF generation for ticket downloads |
 
 ---
 
