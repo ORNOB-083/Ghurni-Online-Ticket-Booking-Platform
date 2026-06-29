@@ -100,7 +100,7 @@ const Navbar = () => {
                 height={32}
                 className="rounded-lg object-contain"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
                 Ghurni
               </span>
             </Link>

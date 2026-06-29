@@ -165,7 +165,15 @@ const Footer = () => {
 
         <div className="py-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-400 dark:text-gray-500">
-            © {new Date().getFullYear()} Ghurni. All rights reserved. Made with ❤️ in Bangladesh.
+            <Link
+              href="https://github.com/ORNOB-083"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+            >
+              Shalehin Ahmed Ornob
+            </Link>
+            {" "}© {new Date().getFullYear()}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link
