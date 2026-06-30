@@ -49,6 +49,18 @@ A full-stack Bengali travel ticket booking platform for bus, train, launch, and 
 
 ---
 
+## 🧪 Demo Vendor Account
+
+To test the **Vendor Dashboard** features (Add Tickets, Manage Bookings, Revenue Analytics, etc.), use the credentials below:
+
+| Role   | Email                 | Password  |
+|--------|-----------------------|-----------|
+| Vendor | `demo.vendor@web.com` | `Vendor12` |
+
+> **Note:** You can use it to explore the ticket creation workflow, accept/reject customer booking requests, and view the revenue charts in the dashboard.
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Frontend
