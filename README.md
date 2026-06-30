@@ -61,6 +61,20 @@ To test the **Vendor Dashboard** features (Add Tickets, Manage Bookings, Revenue
 
 ---
 
+## 💳 Testing User Stripe Payments
+
+Ghurni uses **Stripe** for processing ticket payments. When testing the checkout flow on the live demo or locally, use the following test card numbers. **Do not use real credit card details.**
+
+| Brand | Card Number | CVC | Expiry Date |
+| :--- | :--- | :--- | :--- |
+| **Visa** | `4242 4242 4242 4242` | Any 3 digits | Any future date |
+| **Mastercard** | `5555 5555 5555 4444` | Any 3 digits | Any future date |
+| **American Express** | `3782 822463 10005` | Any 4 digits | Any future date |
+
+> **Note:** To test 3D Secure authentication, use the Visa card number `4000 0000 0000 3220`.
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Frontend
